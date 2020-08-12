@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React ,{useEffect,useState}from 'react'
+import {Charts} from './components/Charts/Charts';
+import {Cards} from './components/Cards/Cards';
+import {CountryPicker} from './components/CountryPicker/CountryPicker';
+import styles from './App.module.css';
+import {fetchdata} from './api';
+import DenseAppBar from './components/Bar/AppBar';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function App(){
+    let [data, setData] =useState({});
+    let [country, setCountry] = useState("");
+    useEffect(() => {
+        async function callfetch(){
+        const response =  await fetchdata();
+        setData(response);
+        
+        
+        return () => {
+        
+        }
+    }
+    callfetch();
+    }, [])
+    const handleCountryChange = async (country)=>{
+        const response =  await fetchdata(country);
+        setCountry(country);
+        setData(response);
+    }
+    return(
+        <div className={styles.container}>
+            <DenseAppBar></DenseAppBar>
+            <Cards data={data}></Cards>
+            <CountryPicker handleCountryChange={handleCountryChange}></CountryPicker>
+            <Charts data={data} country = {country}></Charts>
+           
+        </div>
+    )
 }
-
 export default App;
